@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#1e40af">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content=
+"Xếp Thời khóa biểu ">  <title>Hệ thống kiểm tra trùng lập TKB</title>
+ <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { 
+      height: 100%; 
+      overflow: hidden; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8fafc; 
+    }
+
+    /* ========== LOADER ========== */
+    #loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    .app-logo {
+      width: 80px; height: 80px;
+      margin-bottom: 20px;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      object-fit: cover;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3.5px solid #e2e8f0;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .loading-text {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* ========== IFRAME ========== */
+    iframe {
+      width: 100%; height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* ========== NÚT CÀI ĐẶT ỨNG DỤNG ========== */
+    #install-banner {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e40af;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 8px 25px rgba(30, 64, 175, 0.35);
+      display: none;               /* ẩn mặc định */
+      align-items: center;
+      gap: 10px;
+      z-index: 10000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      white-space: nowrap;
+    }
+    #install-banner:hover {
+      background: #1e3a8a;
+      transform: translateX(-50%) translateY(-3px);
+      box-shadow: 0 12px 30px rgba(30, 64, 175, 0.45);
+    }
+    #install-banner svg {
+      width: 20px; height: 20px;
+      fill: currentColor;
+    }
+
+    /* Hướng dẫn cài trên iOS (Safari) */
+    #ios-guide {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: white;
+      padding: 20px;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.12);
+      z-index: 10001;
+      display: none;
+      text-align: center;
+    }
+    #ios-guide h3 {
+      font-size: 17px;
+      margin-bottom: 12px;
+      color: #1e293b;
+    }
+    #ios-guide p {
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    #ios-guide .steps {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    #ios-guide .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 13px;
+      color: #475569;
+    }
+    #ios-guide .step-icon {
+      width: 44px; height: 44px;
+      background: #f1f5f9;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 6px;
+      font-size: 20px;
+    }
+    #ios-guide button {
+      background: #1e40af;
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <img src="logo.png" alt="Logo" class="app-logo" onerror="this.style.display='none'">
+    <div class="spinner"></div>
+    <div class="loading-text">Đang tải dữ liệu...</div>
+  </div>
+
+  <!-- IFRAME ỨNG DỤNG -->
+  <iframe 
+    id="app-iframe"
+    src="https://script.google.com/macros/s/AKfycbwUDIAfEXQ5x3UBidKbkeBrfw8lP2QjwFrkVD4vvbmaiQoAABkuH3N23wnjqFQYS3lB/exec" 
+    allow="fullscreen"
+    loading="eager"
+    onload="hideLoader()">
+  </iframe>
+
+  <!-- NÚT CÀI ĐẶT (Chrome / Android / Edge) -->
+  <button id="install-banner">
+    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+    Cài đặt ứng dụng
+  </button>
+
+  <!-- HƯỚNG DẪN CÀI TRÊN iOS (Safari) -->
+  <div id="ios-guide">
+    <h3>Cài đặt ứng dụng trên iPhone / iPad</h3>
+    <p>Nhấn nút <strong>Chia sẻ</strong> → chọn <strong>Thêm vào Màn hình chính</strong></p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">⬆️</div>
+        <span>Chia sẻ</span>
+      </div>
+      <div class="step">
+        <div class="step-icon">➕</div>
+        <span>Thêm vào<br>Màn hình chính</span>
+      </div>
+    </div>
+    <button onclick="document.getElementById('ios-guide').style.display='none'">Đã hiểu</button>
+  </div>
+
+  <script>
+    // ========== ẨN LOADER ==========
+    function hideLoader() {
+      const loader = document.getElementById('loader');
+      if (loader) loader.classList.add('hidden');
+    }
+    setTimeout(hideLoader, 8000); // dự phòng
+
+    // ========== CÀI ĐẶT PWA ==========
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('install-banner');
+    const iosGuide = document.getElementById('ios-guide');
+
+    // Phát hiện iOS Safari
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+    // Nếu đã cài rồi thì không hiện gì cả
+    if (isStandalone) {
+      // đã chạy như app → không cần nút
+    } 
+    // iOS → hiện hướng dẫn
+    else if (isIOS) {
+      setTimeout(() => {
+        iosGuide.style.display = 'block';
+      }, 1500);
+    }
+
+    // Chrome / Edge / Android → bắt sự kiện beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();               // chặn banner mặc định của Chrome
+      deferredPrompt = e;
+      installBtn.style.display = 'flex'; // hiện nút của mình
+    });
+
+    // Khi người dùng nhấn nút "Cài đặt ứng dụng"
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        installBtn.style.display = 'none';
+      }
+      deferredPrompt = null;
+    });
+
+    // Sau khi cài thành công
+    window.addEventListener('appinstalled', () => {
+      installBtn.style.display = 'none';
+      deferredPrompt = null;
+    });
+  </script>
+</body>
+</html>
