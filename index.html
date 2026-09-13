@@ -7,8 +7,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content=
-"Xếp Thời khóa biểu ">  <title>Hệ thống kiểm tra trùng lập TKB</title>
- <link rel="icon" type="image/png" href="logo.png">
+"Xếp thời khóa biểu ">  <title>Xếp thời khóa biểu trường TH Long Trạch 1</title>
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="manifest" href="manifest.json">
   <style>
@@ -52,6 +52,27 @@
       font-size: 14px;
       color: #64748b;
       font-weight: 500;
+    }
+
+    /* ĐẶT THÔNG TIN TÁC GIẢ NẰM Ở ĐÁY MÀN HÌNH LOADER */
+    .developer-info {
+      position: absolute;
+      bottom: 24px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 13px;
+      color: #94a3b8;
+      font-weight: 400;
+      padding: 0 10px;
+    }
+    .developer-info a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .developer-info a:hover {
+      text-decoration: underline;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     #loader.hidden {
@@ -164,6 +185,9 @@
     <img src="logo.png" alt="Logo" class="app-logo" onerror="this.style.display='none'">
     <div class="spinner"></div>
     <div class="loading-text">Đang tải dữ liệu...</div>
+
+    <!-- NẰM NỔI Ở ĐÁY MÀN HÌNH LOADER -->
+    <div class="developer-info">Xây dựng phát triển ứng dụng: <a href="mailto:nguyenanhthuan2@gmail.com">nguyenanhthuan2@gmail.com</a></div>
   </div>
 
   <!-- IFRAME ỨNG DỤNG -->
